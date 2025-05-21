@@ -27,5 +27,12 @@ class cell:
             self.__win.draw_line(line(point(self.__x2, self.__y1), point(self.__x2, self.__y2)), fillcolor)
         if self.has_top_wall:
             self.__win.draw_line(line(point(self.__x1, self.__y2), point(self.__x2, self.__y2)), fillcolor)
-        
+    
+    def centroid(self):
+        return point((self.__x2 - self.__x1)/2 + self.__x1, (self.__y2 - self.__y1)/2 + self.__y1)
+    
+    def draw_move(self, to_cell, undo=False):
+        start_pt = self.centroid()
+        end_pt = to_cell.centroid()
+        self.__win.draw_line(line(start_pt, end_pt), "black" if undo else "grey")
         
