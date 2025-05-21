@@ -1,7 +1,7 @@
 from tkinter import Tk, BOTH, Canvas
 from Line import line
 
-class Window:
+class window:
     def __init__(self, width, height):
         self._tk_root = Tk()
         self._tk_root.title = "Maze Solver"
