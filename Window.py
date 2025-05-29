@@ -3,6 +3,8 @@ from Line import line
 
 class window:
     def __init__(self, width, height):
+        self.width = width
+        self.height = height
         self._tk_root = Tk()
         self._tk_root.title = "Maze Solver"
         self._canvas = Canvas(self._tk_root, bg = "white", height=height, width=width)
