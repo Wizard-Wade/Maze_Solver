@@ -3,7 +3,7 @@ from Point import point
 from Window import window
 
 class cell:
-    def __init__(self, win: window):
+    def __init__(self, win: window = None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -19,14 +19,29 @@ class cell:
         self.__y1 = point1.y
         self.__x2 = point2.x
         self.__y2 = point2.y
-        if self.has_left_wall:
+        if self.__win == None: return
+        
+        erasecolor = "white"
+        if not self.has_left_wall:
+            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x1, self.__y2)), erasecolor)
+        else:
             self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x1, self.__y2)), fillcolor)
+            
         if self.has_bottom_wall:
-            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), fillcolor)
+            self.__win.draw_line(line(point(self.__x1, self.__y2), point(self.__x2, self.__y2)), fillcolor)
+        else:
+            self.__win.draw_line(line(point(self.__x1, self.__y2), point(self.__x2, self.__y2)), erasecolor)
+            
         if self.has_right_wall:
             self.__win.draw_line(line(point(self.__x2, self.__y1), point(self.__x2, self.__y2)), fillcolor)
+        else:
+            self.__win.draw_line(line(point(self.__x2, self.__y1), point(self.__x2, self.__y2)), erasecolor)
+            
         if self.has_top_wall:
-            self.__win.draw_line(line(point(self.__x1, self.__y2), point(self.__x2, self.__y2)), fillcolor)
+            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), fillcolor)
+        else:
+            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), erasecolor)
+            
     
     def centroid(self):
         return point((self.__x2 - self.__x1)/2 + self.__x1, (self.__y2 - self.__y1)/2 + self.__y1)
@@ -34,5 +49,6 @@ class cell:
     def draw_move(self, to_cell, undo=False):
         start_pt = self.centroid()
         end_pt = to_cell.centroid()
+        if self.__win == None: return
         self.__win.draw_line(line(start_pt, end_pt), "black" if undo else "grey")
         
