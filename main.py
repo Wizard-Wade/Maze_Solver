@@ -5,6 +5,7 @@ from Cell import *
 from maze import maze
 
 win = window(802, 602)
-maze(2,2,0,0,50,50,win, 10)
+m1 = maze(2,2,0,0,25,25,win)
+m1.solve()
 
 win.wait_for_close()

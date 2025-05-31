@@ -59,7 +59,7 @@ class maze:
     def __animate(self):
         if self.__win == None: return
         self.__win.redraw()
-        time.sleep(0.01)
+        time.sleep(0.0001)
         
     def __break_entrance_and_exit(self):
         self.__cells[0][0].has_top_wall = False
@@ -107,3 +107,56 @@ class maze:
         for i in range(self.__num_cols):
             for j in range(self.__num_rows):
                 self.__cells[i][j].visited = False
+    
+    def solve(self):
+        return self._solve_r(0,0)
+    
+    def _solve_r(self, i, j):
+        self.__animate()
+        current_cell: cell = self.__cells[i][j]
+        current_cell.visited = True
+        if i == self.__num_cols-1 and j == self.__num_rows-1:
+            return True
+        
+        walls = current_cell.get_walls()
+        for (idx, wall) in enumerate(walls):
+            if wall or idx ==0 and i == 0 and j == 0:
+                continue
+            
+            next = self._get_next_available_cell(idx, i, j)
+            i1 = next[0]
+            j1 = next[1]
+            
+            next_cell: cell  = self.__cells[i1][j1]
+            if next_cell.visited:
+                continue
+            
+            current_cell.draw_move(next_cell)
+            if self._solve_r(i1, j1):
+                return True
+            current_cell.draw_move(next_cell, True)
+            
+        return False
+    
+    def _get_next_available_cell(self, idx, i, j):
+        if idx == 0:
+            #open to cell above
+            i1 = i
+            j1 = j-1
+        elif idx == 1:
+            #open to cell left
+            i1 = i-1
+            j1 = j
+        elif idx == 2:
+            #open to cell below
+            i1 = i
+            j1 = j+1
+        elif idx == 3:
+            #open to cell right
+            i1 = i+1
+            j1 = j
+        else:
+            # somehow ended up in a cell with all walls
+            raise Exception("Cell has no path out")
+        
+        return i1, j1

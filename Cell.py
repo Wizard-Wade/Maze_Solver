@@ -41,8 +41,7 @@ class cell:
         if self.has_top_wall:
             self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), fillcolor)
         else:
-            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), erasecolor)
-            
+            self.__win.draw_line(line(point(self.__x1, self.__y1), point(self.__x2, self.__y1)), erasecolor)      
     
     def centroid(self):
         return point((self.__x2 - self.__x1)/2 + self.__x1, (self.__y2 - self.__y1)/2 + self.__y1)
@@ -51,5 +50,8 @@ class cell:
         start_pt = self.centroid()
         end_pt = to_cell.centroid()
         if self.__win == None: return
-        self.__win.draw_line(line(start_pt, end_pt), "black" if undo else "grey")
+        self.__win.draw_line(line(start_pt, end_pt), "white" if undo else "red")
+    
+    def get_walls(self):
+        return [self.has_top_wall, self.has_left_wall, self.has_bottom_wall,self.has_right_wall]
         
