@@ -13,6 +13,7 @@ class cell:
         self.__y1 = -1
         self.__y2 = -1
         self.__win = win
+        self.visited = False
     
     def draw(self, point1: point, point2: point, fillcolor: str = "black"):
         self.__x1 = point1.x

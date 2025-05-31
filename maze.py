@@ -1,7 +1,7 @@
 from Cell import *
 from Point import point
 import time
-import tkinter
+import random
 
 class maze:
     def __init__(
@@ -13,28 +13,34 @@ class maze:
             cell_size_x = 0,
             cell_size_y = 0,
             win: window = None,
+            seed = None
         ):
         self.__x1 = x1    
         self.__y1 = y1
         
-        if win !=None and num_cols is 0:
+        if win !=None and num_cols == 0:
             self.__num_cols = int((win.width - self.__x1) / cell_size_x)
             self.__num_rows = int((win.height - self.__y1) / cell_size_y)
         else:
             self.__num_rows = num_rows
             self.__num_cols = num_cols
             
-        if win != None and cell_size_x is 0:
+        if win != None and cell_size_x == 0:
             self.__cell_size_x = int((win.width - self.__x1) / num_cols)
             self.__cell_size_y = int((win.height - self.__y1) / num_rows)
         else:
             self.__cell_size_x = cell_size_x
             self.__cell_size_y = cell_size_y
+            
+        if seed is not None:
+            random.seed(seed)
         
         self.__win = win
         self.__cells = [None] * self.__num_cols
         self.__create_cells()
         self.__break_entrance_and_exit()
+        self.__break_walls_r(0,0)
+        self.__reset_cells_visited()
         
     def __create_cells(self):
         for c in range(self.__num_cols):
@@ -62,3 +68,42 @@ class maze:
         c.has_bottom_wall = False
         self.__draw_cell(self.__num_cols-1, self.__num_rows-1)
         
+    def __break_walls_r(self, i, j):
+        c:cell = self.__cells[i][j]
+        c.visited = True
+        while True:
+            to_visit = []
+            if i != 0 and not self.__cells[i-1][j].visited:
+                to_visit.append(("l", i-1, j))
+            if i != self.__num_cols-1 and not self.__cells[i+1][j].visited:
+                to_visit.append(("r", i+1, j))
+            if j != 0 and not self.__cells[i][j-1].visited:
+                to_visit.append(("u", i, j-1))
+            if j != self.__num_rows-1 and not self.__cells[i][j+1].visited:
+                to_visit.append(("d", i, j+1))
+            
+            if not to_visit:
+                self.__draw_cell(i,j)
+                return            
+            direction = to_visit[random.randrange(0, len(to_visit))]
+            ni = direction[1]
+            nj = direction[2]
+            match direction[0]:
+                case "l":
+                    c.has_left_wall = False
+                    self.__cells[ni][nj].has_right_wall = False
+                case "r":
+                    c.has_right_wall = False
+                    self.__cells[ni][nj].has_left_wall = False
+                case "u":
+                    c.has_top_wall = False
+                    self.__cells[ni][nj].has_bottom_wall = False
+                case "d":
+                    c.has_bottom_wall = False
+                    self.__cells[ni][nj].has_top_wall = False
+            self.__break_walls_r(ni,nj)
+        
+    def __reset_cells_visited(self):
+        for i in self.__num_cols:
+            for j in self.__num_rows:
+                self.__cells[i][j].visited = False
