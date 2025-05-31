@@ -22,6 +22,9 @@ class testsolver(unittest.TestCase):
             m1._maze__cells[num_cols - 1][num_rows - 1].has_bottom_wall,
             False,
         )
+        self.assertFalse(
+            all(list(map(lambda c: c.visited, [item for sublist in m1._maze__cells for item in sublist])))
+        )
     
 
         
